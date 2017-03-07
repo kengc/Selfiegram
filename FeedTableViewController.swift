@@ -58,20 +58,25 @@ class FeedTableViewController: UITableViewController {
         
         //let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
 
+        //this connects back to the object cell using the identifier "postCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
         
         let post = posts[indexPath.row]
         cell.imageView?.image = post.image
-        cell.textLabel?.text = post.comment
-
-        //cell.textLabel?.text = "This is a post \(indexPath.row)"
-        cell.textLabel?.text = words[indexPath.row]
         
+
+        //cell.textLabel?.text = "This is a post \(indexPath.row)" //old step 2
+        //cell.textLabel?.text = words[indexPath.row]   //old step 3
+        cell.textLabel?.text = post.comment  //step 4
         
         
         return cell
     }
     
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+         print("the user tapped on a row \(indexPath)")
+    }
  
     /*
     // Override to support conditional editing of the table view.
