@@ -1,5 +1,5 @@
 //
-//  FeedViewController.swift
+//  FeedTableViewController.swift
 //  Selfiegram
 //
 //  Created by Kevin Cleathero on 2017-03-06.
@@ -9,9 +9,8 @@
 import UIKit
 
 class FeedTableViewController: UITableViewController {
-
-   
-    var words = ["Hello","my", "name", "is", "Selfigram"]
+    
+    var words = ["Hello", "my", "name", "is", "Selfiegram"]
     var posts = [Post]()
     
     override func viewDidLoad() {
@@ -23,9 +22,7 @@ class FeedTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        //what is the ! for?
-        //let me = User(aUsername: "danny", aProfileImage: UIImage(named: "Grumpy-Cat")!)
-        let me = User(uname: "danny", pimage: UIImage(named: "Grumpy-Cat")!)
+        let me = User(uname: "Kevin", pimage: UIImage(named: "Grumpy-Cat")!)
         
         let post0 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 0")
         let post1 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 1")
@@ -33,9 +30,7 @@ class FeedTableViewController: UITableViewController {
         let post3 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 3")
         let post4 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 4")
         
-       
         posts = [post0, post1, post2, post3, post4]
-        
         
     }
 
@@ -43,6 +38,7 @@ class FeedTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
 
     // MARK: - Table view data source
 
@@ -55,30 +51,28 @@ class FeedTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 5
     }
+
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell  {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
         
         let post = posts[indexPath.row]
-        
         cell.imageView?.image = post.image
         cell.textLabel?.text = post.comment
+
+        //cell.textLabel?.text = "This is a post \(indexPath.row)"
+        cell.textLabel?.text = words[indexPath.row]
+        
+        
         
         return cell
     }
     
-
-    
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
+ 
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

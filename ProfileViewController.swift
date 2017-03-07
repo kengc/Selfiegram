@@ -58,6 +58,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         // 1. When the delegate method is returned, it passes along a dictionary called info.
         //    This dictionary contains multiple things that maybe useful to us.
         //    We are getting an image from the UIImagePickerControllerOriginalImage key in that dictionary
+        //  the ? means if TRY this and if, after unpacking into a UIImage, there is a UIImage then 
+        // display the image, else if there isnt a UIImage then ignore this fuction
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
             //2. To our imageView, we set the image property to be the image the user has chosen
