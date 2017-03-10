@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -118,7 +119,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SOB-7U-Vb7" id="TNh-BN-dJL">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -138,18 +139,53 @@
         <scene sceneID="fz4-f3-GKX">
             <objects>
                 <tableViewController id="aLD-bY-kjB" customClass="FeedTableViewController" customModule="Selfiegram" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="1GP-Vx-c1d" customClass="FeedTable">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="320" sectionHeaderHeight="28" sectionFooterHeight="28" id="1GP-Vx-c1d" customClass="FeedTable">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="postCell" id="cxf-Pu-Pi8">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="postCell" rowHeight="320" id="cxf-Pu-Pi8" customClass="SelfieCell" customModule="Selfiegram" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="320"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cxf-Pu-Pi8" id="vaJ-2c-80H">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="319"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGa-CT-EuA">
+                                            <rect key="frame" x="8" y="266" width="121" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0PV-W5-cR4" userLabel="Selfie Image View">
+                                            <rect key="frame" x="8" y="8" width="359" height="250"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="250" id="7sl-lC-S2p"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="comment" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g8p-pW-zbo">
+                                            <rect key="frame" x="8" y="295" width="72.5" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="0PV-W5-cR4" firstAttribute="leading" secondItem="eGa-CT-EuA" secondAttribute="trailing" constant="-121" id="24E-bv-XTq"/>
+                                        <constraint firstItem="g8p-pW-zbo" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="8hr-od-zDD"/>
+                                        <constraint firstItem="eGa-CT-EuA" firstAttribute="top" secondItem="0PV-W5-cR4" secondAttribute="bottom" constant="8" id="DE3-Pr-ycX"/>
+                                        <constraint firstItem="eGa-CT-EuA" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="Gcq-gz-spi"/>
+                                        <constraint firstItem="0PV-W5-cR4" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="P8y-2c-hXC"/>
+                                        <constraint firstItem="0PV-W5-cR4" firstAttribute="top" secondItem="vaJ-2c-80H" secondAttribute="topMargin" id="WJ5-ty-APZ"/>
+                                        <constraint firstItem="g8p-pW-zbo" firstAttribute="top" secondItem="eGa-CT-EuA" secondAttribute="bottom" constant="8" id="ldm-2M-lr2"/>
+                                        <constraint firstItem="0PV-W5-cR4" firstAttribute="trailing" secondItem="vaJ-2c-80H" secondAttribute="trailingMargin" id="s7Y-Jv-Cya"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="commentLabel" destination="eGa-CT-EuA" id="J8N-0C-VmV"/>
+                                    <outlet property="selfieImageView" destination="0PV-W5-cR4" id="E3M-tJ-yvn"/>
+                                    <outlet property="usernameLabel" destination="g8p-pW-zbo" id="Kte-6k-A8c"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -157,7 +193,14 @@
                             <outlet property="delegate" destination="aLD-bY-kjB" id="yBq-g2-1zp"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="tIN-gu-q5M"/>
+                    <navigationItem key="navigationItem" id="tIN-gu-q5M">
+                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="xgy-qs-v70">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="cameraButtonPressed:" destination="aLD-bY-kjB" id="VF5-5R-Yey"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d2H-Jf-xIW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -186,6 +229,7 @@
         <!--Activities-->
         <scene sceneID="o8N-O9-lBF">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qca-8A-H3b" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="B9S-cD-6D8" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Activities" image="Activities" id="NeV-Ov-j6a"/>
                     <toolbarItems/>
@@ -199,7 +243,6 @@
                         <segue destination="fsD-DJ-NqZ" kind="relationship" relationship="rootViewController" id="DDL-QP-VEs"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Qca-8A-H3b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-87" y="30"/>
         </scene>
