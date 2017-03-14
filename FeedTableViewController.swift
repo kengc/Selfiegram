@@ -23,15 +23,85 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        let me = User(uname: "Kevin", pimage: UIImage(named: "Grumpy-Cat")!)
         
-        let post0 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 0")
-        let post1 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 1")
-        let post2 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 2")
-        let post3 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 3")
-        let post4 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 4")
+        //original
+//        let me = User(uname: "Kevin", pimage: UIImage(named: "Grumpy-Cat")!)
+//        
+//        let post0 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 0")
+//        let post1 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 1")
+//        let post2 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 2")
+//        let post3 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 3")
+//        let post4 = Post(uimage: UIImage(named: "Grumpy-Cat")!, puser: me, pcomment: "Grumpy cat 4")
+//        
+//        posts = [post0, post1, post2, post3, post4]
         
-        posts = [post0, post1, post2, post3, post4]
+        
+        
+        /////////////// FLICKR JSON MANIPULATION ///////////////////////
+        let url = URL(string: "https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=4a5a9eadaedd8d43aa97e6eef5d18a95&tags=synth")!
+        
+        
+        //flickr response block
+        let task = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
+            
+            // convert Data to JSON
+            if let jsonUnformatted = try? JSONSerialization.jsonObject(with: data!, options: []) {
+                
+                //value is AnyObject (can be either a dictionary, array, string or a number)
+                let json = jsonUnformatted as? [String: AnyObject]
+                
+                //We are trying to get at each Photo in our JSON response. So, next, we get the value for the key “photos”
+                let photosDictionary = json?["photos"] as? [String : AnyObject]
+                
+                //we should get the value for the key “photo”. This returns an array with every photo object
+                if let photosArray = photosDictionary?["photo"] as? [[String : AnyObject]] {
+                
+                //So, for each photo object in our array let’s get all the necessary information.
+                for photo in photosArray {
+                  
+                    if let farmID = photo["farm"] as? Int,
+                        let serverID = photo["server"] as? String,
+                        let photoID = photo["id"] as? String,
+                        let title = photo["title"] as? String,
+                        let secret = photo["secret"] as? String {
+                    
+                        //print("https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg")
+                        let photoURLString = "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg"
+                        //print(photoURLString)
+                        
+                        //converting string form of URL into a URL object
+                        if let photoURL = URL(string : photoURLString){
+                            let me = User(uname: title, pimage: UIImage(named: "Grumpy-Cat")!)
+                            let post = Post(uimageURL: photoURL, puser: me, pcomment: "flickr selfie")
+                            self.posts.append(post)
+
+                        
+                        }
+                    
+                    }
+                
+                    
+                  }
+                    
+                    //we reload our tableview.
+                    // We use OperationQueue.main because we need update all UI elements on the main thread.
+                    // This is a rule and you will see this again whenever you are updating UI.
+                    OperationQueue.main.addOperation {
+                        self.tableView.reloadData()
+                    
+                }
+             }
+                
+            }else{
+                print("error with response data")
+            }
+            
+        })
+        // this is called to start (or restart, if needed) our task
+        task.resume()
+        
+        print ("outside dataTaskWithURL")
+        ///////////
         
     }
 
@@ -52,7 +122,7 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         //return 5
-        return posts.count
+        return self.posts.count
     }
 
     
@@ -63,22 +133,53 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
 
         //this connects back to the object cell using the identifier "postCell"
         //let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath)
+        
+        //orignal
         let cell = tableView.dequeueReusableCell(withIdentifier: "postCell", for: indexPath) as! SelfieCell
+        
         //cast type to a sefliviewcell
-         
-        let post = posts[indexPath.row]
+        
+        //original
+        let post = self.posts[indexPath.row]
         
         //cell.imageView?.image = post.image
-        cell.selfieImageView.image = post.image
         
-        cell.usernameLabel?.text = post.user.userName
+        //orignal
+        //cell.selfieImageView.image = post.image
+        
+        //orignal
+        //cell.usernameLabel?.text = post.user.userName
         
         
         //cell.textLabel?.text = "This is a post \(indexPath.row)" //old step 2
         //cell.textLabel?.text = words[indexPath.row]   //old step 3
         //cell.textLabel?.text = post.comment  //step 4
-        cell.commentLabel?.text = post.comment
-       
+        
+        //orignal
+        //cell.commentLabel?.text = post.comment
+  
+        // I've added this line to prevent flickering of images
+        // We are inside the cellForRowAtIndexPath method that gets called everything we layout a cell
+        // Because we are reusing "postCell" cells, a reused cell might have an image already set on it.
+        // This always resets the image to blank, waits for the image to download, and then sets it
+        cell.selfieImageView.image = nil
+        
+        let task = URLSession.shared.downloadTask(with: post.imageURL) { (url, response, error) -> Void in
+            
+            if let imageURL = url, let imageData = try? Data(contentsOf: imageURL) {
+                OperationQueue.main.addOperation {
+                    
+                    cell.selfieImageView.image = UIImage(data: imageData)
+                    
+                }
+            }
+        }
+        
+        task.resume()
+        
+        cell.usernameLabel.text = post.user.userName
+        cell.commentLabel.text = post.comment
+
 
         
         return cell
@@ -119,30 +220,32 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         //    We are getting an image from the UIImagePickerControllerOriginalImage key in that dictionary
         //  the ? means if TRY this and if, after unpacking into a UIImage, there is a UIImage then
         // display the image, else if there isnt a UIImage then ignore this fuction
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-            //2. To our imageView, we set the image property to be the image the user has chosen
-            //profileImageView.image = image
-            //2. We create a Post object from the image
-            let me = User(uname: "sam", pimage: UIImage(named: "Grumpy-Cat")!)
-            let post = Post(uimage: image, puser: me, pcomment: "My Selfie")
-            
-            //3. Add post to our posts array
-            //    Adds it to the very top of our array
-            
-            if let indexRow = selectedRowIndex {
-//                posts.remove(at: indexRow)
-//                posts.insert(post, at: indexRow)
-            posts[indexRow] = post  //short form of the above 2 lines
-            }
         
-        }
-        
-        //4. We remember to dismiss the Image Picker from our screen.
-        dismiss(animated: true, completion: nil)
-        
-        //5. Now that we have added a post, reload our table
-        tableView.reloadData()
+        //uncomment below for originl (pre json url stuff)
+//        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+//            
+//            //2. To our imageView, we set the image property to be the image the user has chosen
+//            //profileImageView.image = image
+//            //2. We create a Post object from the image
+//            let me = User(uname: "sam", pimage: UIImage(named: "Grumpy-Cat")!)
+//            let post = Post(uimageURL: image, puser: me, pcomment: "My Selfie")
+//            
+//            //3. Add post to our posts array
+//            //    Adds it to the very top of our array
+//            
+//            if let indexRow = selectedRowIndex {
+////                posts.remove(at: indexRow)
+////                posts.insert(post, at: indexRow)
+//            posts[indexRow] = post  //short form of the above 2 lines
+//            }
+//        
+//        }
+//        
+//        //4. We remember to dismiss the Image Picker from our screen.
+//        dismiss(animated: true, completion: nil)
+//        
+//        //5. Now that we have added a post, reload our table
+//        tableView.reloadData()
         
     }
 

@@ -10,12 +10,13 @@ import Foundation
 import UIKit
 
 class Post {
-    var image: UIImage
+    //var image: UIImage
+    var imageURL:URL
     var user: User  //how does it know about my user class wihtout importing or inheriting?
     var comment: String
 
-    init(uimage: UIImage, puser: User, pcomment: String) {
-        image = uimage
+    init(uimageURL: URL, puser: User, pcomment: String) {
+        imageURL = uimageURL
         user = puser
         comment = pcomment
     }
