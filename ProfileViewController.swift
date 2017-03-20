@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -62,13 +63,52 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         // display the image, else if there isnt a UIImage then ignore this fuction
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
-            //2. To our imageView, we set the image property to be the image the user has chosen
-            profileImageView.image = image
+            // setting the compression quality to 90%
+            if let imageData = UIImageJPEGRepresentation(image, 0.9),
+            let imageFile = PFFile(data: imageData),
+            let user = PFUser.current() {
+                
+                // avatarImage is a new column in our User table
+                user["avatarImage"] = imageFile
+                user.saveInBackground(block: { (success, error) -> Void in
+                
+                    if success {
+                        //print("avatarImage successfully saved")
+                        
+                        //let image = UIImage(data: imageData)
+                        //2. To our imageView, we set the image property to be the image the user has chosen
+                        self.profileImageView.image = image
+                    }
+                
+                })
             
+            }
+           
         }
         
         //3. We remember to dismiss the Image Picker from our screen.
         dismiss(animated: true, completion: nil)
+        
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let user = PFUser.current() {
+            usernameLabel.text = user.username
+            
+            
+            //let’s make it so that if we have added a profile picture, our ProfileViewController shows the profile picture when it appears. Note: PFFiles have a method called getDataInBackground() which will help us get the image.
+            if let imageFile = user["avatarImage"] as? PFFile {
+            
+                imageFile.getDataInBackground(block: { (data, error) -> Void in
+                    if let imageData = data {
+                        self.profileImageView.image = UIImage(data: imageData)
+                    }
+                })
+            }
+        }
         
     }
     /*

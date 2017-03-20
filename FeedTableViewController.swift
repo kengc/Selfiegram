@@ -42,6 +42,16 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         
         
         //flickr response block
+        //here's the documentation on dataTask()
+//        https://developer.apple.com/reference/foundation/urlsession/1407613-datatask
+//        [2:24]
+//        you're giving the dataTask() method a chuck of code to run when that network request finishes
+//        [2:25]
+//        and the dataTask() method will put into `data` `response` and `error` information related to the request you made
+//        [2:28]
+//        in this case `data` will contain the stuff that the request returned which happens to be JSON text -- so that's why the `JSONSerialization.jsonObject()` method is able to take `data`, unwrap it, and convert it into a Swift dictionary and not blow up.
+//        [2:29]
+//        if `data` didn't contain valid JSON and you tried to wrap it and treat it as JSON, it would fail in some way
         let task = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
             
             // convert Data to JSON
