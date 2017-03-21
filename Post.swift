@@ -8,16 +8,29 @@
 
 import Foundation
 import UIKit
+import Parse
 
-class Post {
+class Post: PFObject, PFSubclassing {
     //var image: UIImage
-    var imageURL:URL
-    var user: User  //how does it know about my user class wihtout importing or inheriting?
-    var comment: String
+    @NSManaged var image:PFFile
+    @NSManaged var user: PFUser  //how does it know about my user class wihtout importing or inheriting?
+    @NSManaged var comment: String
 
-    init(uimageURL: URL, puser: User, pcomment: String) {
-        imageURL = uimageURL
-        user = puser
-        comment = pcomment
+    convenience init(image: PFFile, user: PFUser, comment: String) {
+        self.init()
+        self.image = image
+        self.user = user
+        self.comment = comment
+    }
+    
+//    init(uimageURL: URL, puser: User, pcomment: String) {
+//        imageURL = uimageURL
+//        user = puser
+//        comment = pcomment
+//    }
+    
+    static func parseClassName() -> String {
+        // sets what the table name on Parse will be called
+        return "Post"
     }
 }

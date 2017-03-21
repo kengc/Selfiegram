@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class FeedTableViewController: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -17,6 +18,22 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if let query = Post.query() {
+            
+           query.order(byDescending: "createdAt")
+           query.includeKey("user")
+            
+           query.findObjectsInBackground(block: { (posts, error) -> Void in
+                // this block of code will run when the query is complete
+            if let posts = posts as? [Post] {
+                
+                self.posts = posts
+                self.tableView.reloadData()
+            
+               }
+            })
+        }
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -38,79 +55,79 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         
         
         /////////////// FLICKR JSON MANIPULATION ///////////////////////
-        let url = URL(string: "https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=4a5a9eadaedd8d43aa97e6eef5d18a95&tags=synth")!
-        
-        
-        //flickr response block
-        //here's the documentation on dataTask()
-//        https://developer.apple.com/reference/foundation/urlsession/1407613-datatask
-//        [2:24]
-//        you're giving the dataTask() method a chuck of code to run when that network request finishes
-//        [2:25]
-//        and the dataTask() method will put into `data` `response` and `error` information related to the request you made
-//        [2:28]
-//        in this case `data` will contain the stuff that the request returned which happens to be JSON text -- so that's why the `JSONSerialization.jsonObject()` method is able to take `data`, unwrap it, and convert it into a Swift dictionary and not blow up.
-//        [2:29]
-//        if `data` didn't contain valid JSON and you tried to wrap it and treat it as JSON, it would fail in some way
-        let task = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
-            
-            // convert Data to JSON
-            if let jsonUnformatted = try? JSONSerialization.jsonObject(with: data!, options: []) {
-                
-                //value is AnyObject (can be either a dictionary, array, string or a number)
-                let json = jsonUnformatted as? [String: AnyObject]
-                
-                //We are trying to get at each Photo in our JSON response. So, next, we get the value for the key “photos”
-                let photosDictionary = json?["photos"] as? [String : AnyObject]
-                
-                //we should get the value for the key “photo”. This returns an array with every photo object
-                if let photosArray = photosDictionary?["photo"] as? [[String : AnyObject]] {
-                
-                //So, for each photo object in our array let’s get all the necessary information.
-                for photo in photosArray {
-                  
-                    if let farmID = photo["farm"] as? Int,
-                        let serverID = photo["server"] as? String,
-                        let photoID = photo["id"] as? String,
-                        let title = photo["title"] as? String,
-                        let secret = photo["secret"] as? String {
-                    
-                        //print("https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg")
-                        let photoURLString = "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg"
-                        //print(photoURLString)
-                        
-                        //converting string form of URL into a URL object
-                        if let photoURL = URL(string : photoURLString){
-                            let me = User(uname: title, pimage: UIImage(named: "Grumpy-Cat")!)
-                            let post = Post(uimageURL: photoURL, puser: me, pcomment: "flickr selfie")
-                            self.posts.append(post)
-
-                        
-                        }
-                    
-                    }
-                
-                    
-                  }
-                    
-                    //we reload our tableview.
-                    // We use OperationQueue.main because we need update all UI elements on the main thread.
-                    // This is a rule and you will see this again whenever you are updating UI.
-                    OperationQueue.main.addOperation {
-                        self.tableView.reloadData()
-                    
-                }
-             }
-                
-            }else{
-                print("error with response data")
-            }
-            
-        })
-        // this is called to start (or restart, if needed) our task
-        task.resume()
-        
-        print ("outside dataTaskWithURL")
+//        let url = URL(string: "https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&nojsoncallback=1&api_key=4a5a9eadaedd8d43aa97e6eef5d18a95&tags=synth")!
+//        
+//        
+//        //flickr response block
+//        //here's the documentation on dataTask()
+////        https://developer.apple.com/reference/foundation/urlsession/1407613-datatask
+////        [2:24]
+////        you're giving the dataTask() method a chuck of code to run when that network request finishes
+////        [2:25]
+////        and the dataTask() method will put into `data` `response` and `error` information related to the request you made
+////        [2:28]
+////        in this case `data` will contain the stuff that the request returned which happens to be JSON text -- so that's why the `JSONSerialization.jsonObject()` method is able to take `data`, unwrap it, and convert it into a Swift dictionary and not blow up.
+////        [2:29]
+////        if `data` didn't contain valid JSON and you tried to wrap it and treat it as JSON, it would fail in some way
+//        let task = URLSession.shared.dataTask(with: url, completionHandler: {(data, response, error) -> Void in
+//            
+//            // convert Data to JSON
+//            if let jsonUnformatted = try? JSONSerialization.jsonObject(with: data!, options: []) {
+//                
+//                //value is AnyObject (can be either a dictionary, array, string or a number)
+//                let json = jsonUnformatted as? [String: AnyObject]
+//                
+//                //We are trying to get at each Photo in our JSON response. So, next, we get the value for the key “photos”
+//                let photosDictionary = json?["photos"] as? [String : AnyObject]
+//                
+//                //we should get the value for the key “photo”. This returns an array with every photo object
+//                if let photosArray = photosDictionary?["photo"] as? [[String : AnyObject]] {
+//                
+//                //So, for each photo object in our array let’s get all the necessary information.
+//                for photo in photosArray {
+//                  
+//                    if let farmID = photo["farm"] as? Int,
+//                        let serverID = photo["server"] as? String,
+//                        let photoID = photo["id"] as? String,
+//                        let title = photo["title"] as? String,
+//                        let secret = photo["secret"] as? String {
+//                    
+//                        //print("https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg")
+//                        let photoURLString = "https://farm\(farmID).staticflickr.com/\(serverID)/\(photoID)_\(secret).jpg"
+//                        //print(photoURLString)
+//                        
+//                        //converting string form of URL into a URL object
+//                        if let photoURL = URL(string : photoURLString){
+//                            let me = User(uname: title, pimage: UIImage(named: "Grumpy-Cat")!)
+//                            let post = Post(image: photoURL, user: me, comment: "flickr selfie")
+//                            self.posts.append(post)
+//
+//                        
+//                        }
+//                    
+//                    }
+//                
+//                    
+//                  }
+//                    
+//                    //we reload our tableview.
+//                    // We use OperationQueue.main because we need update all UI elements on the main thread.
+//                    // This is a rule and you will see this again whenever you are updating UI.
+//                    OperationQueue.main.addOperation {
+//                        self.tableView.reloadData()
+//                    
+//                }
+//             }
+//                
+//            }else{
+//                print("error with response data")
+//            }
+//            
+//        })
+//        // this is called to start (or restart, if needed) our task
+//        task.resume()
+//        
+//        print ("outside dataTaskWithURL")
         ///////////
         
     }
@@ -172,22 +189,44 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         // We are inside the cellForRowAtIndexPath method that gets called everything we layout a cell
         // Because we are reusing "postCell" cells, a reused cell might have an image already set on it.
         // This always resets the image to blank, waits for the image to download, and then sets it
+        
         cell.selfieImageView.image = nil
         
-        let task = URLSession.shared.downloadTask(with: post.imageURL) { (url, response, error) -> Void in
+        let imageFile = post.image
+        
+        imageFile.getDataInBackground { (data, error) in
             
-            if let imageURL = url, let imageData = try? Data(contentsOf: imageURL) {
-                OperationQueue.main.addOperation {
-                    
-                    cell.selfieImageView.image = UIImage(data: imageData)
-                    
-                }
+            //two ways of doing this
+//            if error == nil {
+//                print("error fetching imagefile data")
+//                return
+//            } else {
+//               
+//            }
+            
+            //OR
+            
+            if let data = data {
+                let image = UIImage(data: data)
+                cell.selfieImageView.image = image
             }
+            
         }
         
-        task.resume()
+//        let task = URLSession.shared.downloadTask(with: post.imageURL) { (url, response, error) -> Void in
+//            
+//            if let imageURL = url, let imageData = try? Data(contentsOf: imageURL) {
+//                OperationQueue.main.addOperation {
+//                    
+//                    cell.selfieImageView.image = UIImage(data: imageData)
+//                    
+//                }
+//            }
+//        }
+//        
+//        task.resume()
         
-        cell.usernameLabel.text = post.user.userName
+        cell.usernameLabel.text = post.user.username
         cell.commentLabel.text = post.comment
 
 
@@ -225,6 +264,40 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
+        
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            // setting the compression quality to 90%
+            if let imageData = UIImageJPEGRepresentation(image, 0.9),
+                let imageFile = PFFile(data: imageData),
+                let user = PFUser.current(){
+                
+                //2. We create a Post object from the image
+                let post = Post(image: imageFile, user: user, comment: "A Selfie")
+                
+                post.saveInBackground(block: { (success, error) -> Void in
+                    if success {
+                        print("Post successfully saved in Parse")
+                        
+                        //3. Add post to our posts array, chose index 0 so that it will be added
+                        //   to the top of your table instead of at the bottom (default behaviour)
+                        self.posts.insert(post, at: 0)
+                        
+                        //4. Now that we have added a post, updating our table
+                        //   We are just inserting our new Post instead of reloading our whole tableView
+                        //   Both method would work, however, this gives us a cool animation for free
+                        
+                        let indexPath = IndexPath(row: 0, section: 0)
+                        self.tableView.insertRows(at: [indexPath], with: .automatic)
+                    }
+                })
+            }
+        }
+        
+        dismiss(animated: true, completion: nil)
+
+    }
+        
         // 1. When the delegate method is returned, it passes along a dictionary called info.
         //    This dictionary contains multiple things that maybe useful to us.
         //    We are getting an image from the UIImagePickerControllerOriginalImage key in that dictionary
@@ -257,7 +330,7 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
 //        //5. Now that we have added a post, reload our table
 //        tableView.reloadData()
         
-    }
+    
 
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
@@ -265,25 +338,52 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         selectedRowIndex = indexPath.row
     }
  
-    /*
+    
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
+        
+        //do checks here for your ingages or someone elses return trie or false
         return true
     }
-    */
+ 
 
-    /*
+    
     // Override to support editing the table view.
+    //we've overridden this by placing our camera icon on the top right, otherwise it would show there
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+             //Delete the row from the data source
+             //use the objectID to determine which object the user wants to delete
+            
+            print("\(indexPath)")
+            
+            //select index of post
+            let post = self.posts[indexPath.row]
+            
+            //#1 delete from parse in cloud
+            post.deleteInBackground(block: { (success, error) in
+                
+                //if successfull deleting from parse then delete locally
+                if success {
+                    //tableView.deleteRows(at: indexPath, with: UITableViewRowAnimation)
+                   
+                    //#2 delete from mirrired array (mirrored to parse)
+                    self.posts.remove(at: indexPath.row)
+                    
+                    //#3 now remove from table. it wants an array but we can be explicit
+                    
+                    //indexpath here want row and section
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    //refresh is automatic with the above call?
+                }
+            })
+
         } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+             //Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
+ 
 
     /*
     // Override to support rearranging the table view.

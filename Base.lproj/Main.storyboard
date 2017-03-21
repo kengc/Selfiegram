@@ -229,7 +229,6 @@
         <!--Activities-->
         <scene sceneID="o8N-O9-lBF">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Qca-8A-H3b" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="B9S-cD-6D8" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Activities" image="Activities" id="NeV-Ov-j6a"/>
                     <toolbarItems/>
@@ -243,6 +242,7 @@
                         <segue destination="fsD-DJ-NqZ" kind="relationship" relationship="rootViewController" id="DDL-QP-VEs"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qca-8A-H3b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-87" y="30"/>
         </scene>
