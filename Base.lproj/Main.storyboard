@@ -169,20 +169,35 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LPg-Vv-HnM">
+                                            <rect key="frame" x="295" y="266" width="42" height="37"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="23" id="agc-hx-rG5"/>
+                                                <constraint firstAttribute="height" constant="20" id="gPs-3F-3zR"/>
+                                            </constraints>
+                                            <state key="normal" image="hearts-off"/>
+                                            <state key="selected" image="hearts-on"/>
+                                            <connections>
+                                                <action selector="likeButtonClicked:" destination="cxf-Pu-Pi8" eventType="touchUpInside" id="Jne-kK-Dgn"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="0PV-W5-cR4" firstAttribute="leading" secondItem="eGa-CT-EuA" secondAttribute="trailing" constant="-121" id="24E-bv-XTq"/>
                                         <constraint firstItem="g8p-pW-zbo" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="8hr-od-zDD"/>
+                                        <constraint firstAttribute="trailing" secondItem="LPg-Vv-HnM" secondAttribute="trailing" constant="8" id="APb-qR-XQ5"/>
                                         <constraint firstItem="eGa-CT-EuA" firstAttribute="top" secondItem="0PV-W5-cR4" secondAttribute="bottom" constant="8" id="DE3-Pr-ycX"/>
                                         <constraint firstItem="eGa-CT-EuA" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="Gcq-gz-spi"/>
                                         <constraint firstItem="0PV-W5-cR4" firstAttribute="leading" secondItem="vaJ-2c-80H" secondAttribute="leadingMargin" id="P8y-2c-hXC"/>
                                         <constraint firstItem="0PV-W5-cR4" firstAttribute="top" secondItem="vaJ-2c-80H" secondAttribute="topMargin" id="WJ5-ty-APZ"/>
+                                        <constraint firstItem="LPg-Vv-HnM" firstAttribute="top" secondItem="0PV-W5-cR4" secondAttribute="bottom" constant="8" id="WPY-ep-dbG"/>
                                         <constraint firstItem="g8p-pW-zbo" firstAttribute="top" secondItem="eGa-CT-EuA" secondAttribute="bottom" constant="8" id="ldm-2M-lr2"/>
                                         <constraint firstItem="0PV-W5-cR4" firstAttribute="trailing" secondItem="vaJ-2c-80H" secondAttribute="trailingMargin" id="s7Y-Jv-Cya"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="commentLabel" destination="eGa-CT-EuA" id="J8N-0C-VmV"/>
+                                    <outlet property="likeButton" destination="LPg-Vv-HnM" id="3o7-G9-tUT"/>
                                     <outlet property="selfieImageView" destination="0PV-W5-cR4" id="E3M-tJ-yvn"/>
                                     <outlet property="usernameLabel" destination="g8p-pW-zbo" id="Kte-6k-A8c"/>
                                 </connections>
@@ -251,6 +266,8 @@
         <image name="Activities" width="25" height="25"/>
         <image name="NewsFeed" width="25" height="25"/>
         <image name="Profile" width="25" height="25"/>
+        <image name="hearts-off" width="42" height="37"/>
+        <image name="hearts-on" width="42" height="37"/>
         <image name="placeholder" width="256" height="256"/>
     </resources>
 </document>

@@ -25,7 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             clientConfiguration.applicationId = "274b7fc5-d3cb-4b9a-9eb2-c892c4f99b18"
             clientConfiguration.server = "https://ios-van-pt-parse-server-3.herokuapp.com/parse"
         }
+        
+   
         Post.registerSubclass()
+        Activity.registerSubclass()
         Parse.initialize(with: configuration)
 
         

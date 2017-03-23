@@ -171,6 +171,9 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         
         //cell.imageView?.image = post.image
         
+        //set the cell’s post property to the post for that indexPath
+        cell.post = post
+        
         //orignal
         //cell.selfieImageView.image = post.image
         
@@ -190,28 +193,28 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
         // Because we are reusing "postCell" cells, a reused cell might have an image already set on it.
         // This always resets the image to blank, waits for the image to download, and then sets it
         
-        cell.selfieImageView.image = nil
-        
-        let imageFile = post.image
-        
-        imageFile.getDataInBackground { (data, error) in
-            
-            //two ways of doing this
-//            if error == nil {
-//                print("error fetching imagefile data")
-//                return
-//            } else {
-//               
+//        cell.selfieImageView.image = nil
+//        
+//        let imageFile = post.image
+//        
+//        imageFile.getDataInBackground { (data, error) in
+//            
+//            //two ways of doing this
+////            if error == nil {
+////                print("error fetching imagefile data")
+////                return
+////            } else {
+////               
+////            }
+//            
+//            //OR
+//            
+//            if let data = data {
+//                let image = UIImage(data: data)
+//                cell.selfieImageView.image = image
 //            }
-            
-            //OR
-            
-            if let data = data {
-                let image = UIImage(data: data)
-                cell.selfieImageView.image = image
-            }
-            
-        }
+//            
+//        }
         
 //        let task = URLSession.shared.downloadTask(with: post.imageURL) { (url, response, error) -> Void in
 //            
