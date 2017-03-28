@@ -30,12 +30,7 @@ class Post: PFObject, PFSubclassing {
         return relation(forKey: "likes")
     }
     
-//    init(uimageURL: URL, puser: User, pcomment: String) {
-//        imageURL = uimageURL
-//        user = puser
-//        comment = pcomment
-//    }
-    
+   
     static func parseClassName() -> String {
         // sets what the table name on Parse will be called
         return "Post"

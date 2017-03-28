@@ -10,42 +10,48 @@ import UIKit
 import Parse
 
 class SelfieCell: UITableViewCell {
-
+    
     //first add a post object to our cell
-  //  var post:Post?
+    //  var post:Post?
     
     @IBOutlet weak var selfieImageView: UIImageView!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var heartAnimationView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-
+    
+    //creating another property. this is like a set property method
+    //selfiecell.post = sfdf   didset will getfired
     var post:Post? {
         
         // didSet is run when we set this variable in FeedViewController
+        //if it gets set to somthing execute the code below set the vars below, otherwise skip it
+        //didset is trigger when a post object (whether legit or nil) has been assigned
         didSet{
-        
+            
             if let post = post {
-
+                
                 selfieImageView.image = nil
-        
+                
                 let imageFile = post.image
-        
+                
+                
                 imageFile.getDataInBackground { (data, error) in
-            
-            //two ways of doing this
-            //            if error == nil {
-            //                print("error fetching imagefile data")
-            //                return
-            //            } else {
-            //
-            //            }
-            
-            //OR
+                    
+                    //two ways of doing this
+                    //            if error == nil {
+                    //                print("error fetching imagefile data")
+                    //                return
+                    //            } else {
+                    //
+                    //            }
+                    
+                    //OR
                     if let data = data {
                         let image = UIImage(data: data)
                         self.selfieImageView.image = image
@@ -77,6 +83,7 @@ class SelfieCell: UITableViewCell {
         }
     }
     
+    //IBAction allows the method to be visible in the storyboard (drag n drop stuff)
     @IBAction func likeButtonClicked(_ sender: UIButton) {
         
         // the ! symbol means NOT
@@ -90,11 +97,12 @@ class SelfieCell: UITableViewCell {
             let user = PFUser.current() {
             
             // like button has been selected and we should add a like from currentUser
-        if sender.isSelected {
+            if sender.isSelected {
                 
                 // PFRelation has a useful method called addObject that adds the unique element
                 // you are passing in as the argument. It will never add multiple copies
                 // of the same element (in this case user)
+                //sets the relation between the post and the user and how `didSet` queries for that information.
                 post.likes.add(user)
                 
                 // We have modified the likes property on post. We must now save it to Parse
@@ -113,14 +121,14 @@ class SelfieCell: UITableViewCell {
                     }
                 })
             } else {
-            
+                
                 //post.deleteInBackground(block: { (success, error) in
-                        
+                
                 //#2 delete from mirrored array (mirrored to parse)
                 post.likes.remove(user)
-                        
+                
                 //at this point i am pasing the changes back to parse and parse is making the
-                //changes to the table, hence we are SAVING whatever changes i did to the post 
+                //changes to the table, hence we are SAVING whatever changes i did to the post
                 //object
                 post.saveInBackground(block: { (success, error) -> Void in
                     if success {
@@ -153,14 +161,46 @@ class SelfieCell: UITableViewCell {
         }
     }
     
+    
+    func tapAnimation(){
         
-        
+        //checking for nil in my objects first then...
+        if let postUser = post?.user,
+            let currentUser = PFUser.current() {
+            
+            //then we check if the users are the same
+            if postUser.objectId == currentUser.objectId {
+                
+                //Done: Check if the post is already liked, if it is then do not run animation code
+                if likeButton.isSelected != true
+                {
+                    self.heartAnimationView.transform = CGAffineTransform(scaleX: 0, y: 0)
+                    self.heartAnimationView.isHidden = false
+                    
+                    
+                    //animation for 1 second, no delay
+                    UIView.animate(withDuration: 1.0, delay: 0, options: [], animations: { () -> Void in
+                        
+                        // during our animation change heartAnimationView to be 3X what it is on storyboard
+                        self.heartAnimationView.transform = CGAffineTransform(scaleX: 3, y: 3)
+                        
+                    }) { (success) -> Void in
+                        
+                        // when animation is complete set heartAnimationView to be hidden
+                        self.heartAnimationView.isHidden = true
+                    }
+                    
+                    likeButtonClicked(likeButton)
+                }
+            }
+        }
+    }
     
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
-
+    
 }

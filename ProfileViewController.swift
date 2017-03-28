@@ -10,17 +10,17 @@ import UIKit
 import Parse
 
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         usernameLabel.text = "Kevin"
     }
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -59,19 +59,19 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         // 1. When the delegate method is returned, it passes along a dictionary called info.
         //    This dictionary contains multiple things that maybe useful to us.
         //    We are getting an image from the UIImagePickerControllerOriginalImage key in that dictionary
-        //  the ? means if TRY this and if, after unpacking into a UIImage, there is a UIImage then 
+        //  the ? means if TRY this and if, after unpacking into a UIImage, there is a UIImage then
         // display the image, else if there isnt a UIImage then ignore this fuction
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
             // setting the compression quality to 90%
             if let imageData = UIImageJPEGRepresentation(image, 0.9),
-            let imageFile = PFFile(data: imageData),
-            let user = PFUser.current() {
+                let imageFile = PFFile(data: imageData),
+                let user = PFUser.current() {
                 
                 // avatarImage is a new column in our User table
                 user["avatarImage"] = imageFile
                 user.saveInBackground(block: { (success, error) -> Void in
-                
+                    
                     if success {
                         //print("avatarImage successfully saved")
                         
@@ -79,11 +79,11 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                         //2. To our imageView, we set the image property to be the image the user has chosen
                         self.profileImageView.image = image
                     }
-                
+                    
                 })
-            
+                
             }
-           
+            
         }
         
         //3. We remember to dismiss the Image Picker from our screen.
@@ -101,7 +101,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             
             //let’s make it so that if we have added a profile picture, our ProfileViewController shows the profile picture when it appears. Note: PFFiles have a method called getDataInBackground() which will help us get the image.
             if let imageFile = user["avatarImage"] as? PFFile {
-            
+                
                 imageFile.getDataInBackground(block: { (data, error) -> Void in
                     if let imageData = data {
                         self.profileImageView.image = UIImage(data: imageData)
@@ -112,13 +112,13 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
     }
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
