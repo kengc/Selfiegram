@@ -194,8 +194,19 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         
-        //do checks here for your ingages or someone elses return trie or false
-        return true
+        //do checks here for your images or someone elses return true or false
+       
+        if let currentUser = PFUser.current() {
+            let post = posts[indexPath.row]
+            
+            //then we check if the users are the same and if so we can delete
+            if post.user.objectId == currentUser.objectId {
+                return true
+            } else {
+                print("Not allowed to delete another users post")
+            }
+        }
+        return false
     }
     
     
@@ -208,58 +219,53 @@ class FeedTableViewController: UITableViewController, UIImagePickerControllerDel
             //Delete the row from the data source
             //use the objectID to determine which object the user wants to delete
             
-            print("\(indexPath)")
+            //print("\(indexPath)")
             
-             if let currentUser = PFUser.current() {
+            if let currentUser = PFUser.current() {
                 
                 let post = posts[indexPath.row]
-                
-                //then we check if the users are the same and if so we can delete
-                if post.user.objectId == currentUser.objectId {
+            
+                //#1 delete from parse in cloud
+                post.deleteInBackground(block: { (success, error) in
                     
-                    
-                    //#1 delete from parse in cloud
-                    post.deleteInBackground(block: { (success, error) in
+                    //if successfull deleting from parse then delete locally
+                    if success {
+                        //tableView.deleteRows(at: indexPath, with: UITableViewRowAnimation)
                         
-                        //if successfull deleting from parse then delete locally
-                        if success {
-                            //tableView.deleteRows(at: indexPath, with: UITableViewRowAnimation)
-                            
-                            //#2 delete from mirrired array (mirrored to parse)
-                            self.posts.remove(at: indexPath.row)
-                            
-                            //#3 now remove from table. it wants an array but we can be explicit
-                            
-                            //indexpath here want row and section
-                            tableView.deleteRows(at: [indexPath], with: .fade)
-                            //refresh is automatic with the above call?
-                            
-                            ////////past post object to isolated method
-                            // but also check to ensure that the user that is deleting the post
-                            //is the owner of the photo, if not do not allow delete HUD message
-                            //PFQuery to find the like activity
-                            if let activityQuery = Activity.query(){
-                                activityQuery.whereKey("post", equalTo: post)
-                                activityQuery.whereKey("user", equalTo: currentUser)
-                                activityQuery.whereKey("type", equalTo: "like")
-                                activityQuery.findObjectsInBackground(block: { (activities, error) -> Void in
-                                    
-                                    
-                                    // You should only have one like activity from a user
-                                    // but this is code is being safe and checking for one or multiple instances
-                                    // and then deleting all of them
-                                    if let activities = activities {
-                                        for activity in activities {
-                                            activity.deleteInBackground(block: { (success, error) -> Void in
-                                                print("deleted activity")
-                                            })
-                                        }
+                        //#2 delete from mirrired array (mirrored to parse)
+                        self.posts.remove(at: indexPath.row)
+                        
+                        //#3 now remove from table. it wants an array but we can be explicit
+                        
+                        //indexpath here want row and section
+                        tableView.deleteRows(at: [indexPath], with: .fade)
+                        //refresh is automatic with the above call?
+                        
+                        ////////past post object to isolated method
+                        // but also check to ensure that the user that is deleting the post
+                        //is the owner of the photo, if not do not allow delete HUD message
+                        //PFQuery to find the like activity
+                        if let activityQuery = Activity.query(){
+                            activityQuery.whereKey("post", equalTo: post)
+                            activityQuery.whereKey("user", equalTo: currentUser)
+                            activityQuery.whereKey("type", equalTo: "like")
+                            activityQuery.findObjectsInBackground(block: { (activities, error) -> Void in
+                                
+                                
+                                // You should only have one like activity from a user
+                                // but this is code is being safe and checking for one or multiple instances
+                                // and then deleting all of them
+                                if let activities = activities {
+                                    for activity in activities {
+                                        activity.deleteInBackground(block: { (success, error) -> Void in
+                                            print("deleted activity")
+                                        })
                                     }
-                                })
-                            }
+                                }
+                            })
                         }
-                    })
-                }
+                    }
+                })
             }
         } else if editingStyle == .insert {
             //Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

@@ -164,13 +164,13 @@ class SelfieCell: UITableViewCell {
     
     func tapAnimation(){
         
-        //checking for nil in my objects first then...
-        if let postUser = post?.user,
-            let currentUser = PFUser.current() {
-            
-            //then we check if the users are the same
-            if postUser.objectId == currentUser.objectId {
-                
+//        //checking for nil in my objects first then...
+//        if let postUser = post?.user,
+//            let currentUser = PFUser.current() {
+//            
+//            //then we check if the users are the same
+//            if postUser.objectId == currentUser.objectId {
+        
                 //Done: Check if the post is already liked, if it is then do not run animation code
                 if likeButton.isSelected != true
                 {
@@ -192,8 +192,8 @@ class SelfieCell: UITableViewCell {
                     
                     likeButtonClicked(likeButton)
                 }
-            }
-        }
+            //}
+        //}
     }
     
     
