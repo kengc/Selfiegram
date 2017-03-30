@@ -21,8 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Initialize Parse.
         let configuration = ParseClientConfiguration { clientConfiguration in
-            clientConfiguration.applicationId = "274b7fc5-d3cb-4b9a-9eb2-c892c4f99b18"
-            clientConfiguration.server = "https://ios-van-pt-parse-server-3.herokuapp.com/parse"
+            //clientConfiguration.applicationId = "274b7fc5-d3cb-4b9a-9eb2-c892c4f99b18"
+            clientConfiguration.applicationId = "5CDeHX2xNhW11QZXr9AvtBbEQY0lft4jpUuMFt9g"
+            
+            //clientConfiguration.server = "https://ios-van-pt-parse-server-3.herokuapp.com/parse"
+            
+            clientConfiguration.server = "https://parse-server-ios-main.herokuapp.com/parse"
         }
         
         
