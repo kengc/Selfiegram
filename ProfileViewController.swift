@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        
+        navigationItem.titleView = UIImageView(image: UIImage(named: "Selfigram-logo"))
         usernameLabel.text = "Kevin"
     }
     @IBOutlet weak var usernameLabel: UILabel!

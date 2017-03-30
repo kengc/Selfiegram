@@ -17,6 +17,7 @@ class ActivityViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.titleView = UIImageView(image: UIImage(named: "Selfigram-logo"))
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
